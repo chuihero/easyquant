@@ -48,6 +48,8 @@ class MainEngine:
         else:
             self.user = None
             self.log.info('选择了无交易模式')
+            with open(ACCOUNT_OBJECT_FILE, 'wb') as f:
+                dill.dump(self.user, f)
 
         self.event_engine = EventEngine()
         self.clock_engine = ClockEngine(self.event_engine, tzinfo)
