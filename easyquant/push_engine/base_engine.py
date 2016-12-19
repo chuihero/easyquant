@@ -1,13 +1,8 @@
 # coding: utf-8
-import dill
+import time
 from threading import Thread
 
-import aiohttp
-
-import time
 from easyquant.event_engine import Event
-
-ACCOUNT_OBJECT_FILE = 'account.session'
 
 
 class BaseEngine:
@@ -16,8 +11,11 @@ class BaseEngine:
     PushInterval = 1
 
     def __init__(self, event_engine, clock_engine):
+<<<<<<< HEAD
 #        with open(ACCOUNT_OBJECT_FILE, 'rb') as f:
 #            self.user = dill.load(f)
+=======
+>>>>>>> upstream/master
         self.event_engine = event_engine
         self.clock_engine = clock_engine
         self.is_active = True
@@ -35,12 +33,12 @@ class BaseEngine:
         while self.is_active:
             try:
                 response_data = self.fetch_quotation()
-            except aiohttp.errors.ServerDisconnectedError:
-                time.sleep(self.PushInterval)
+            except:
+                self.wait()
                 continue
             event = Event(event_type=self.EventType, data=response_data)
             self.event_engine.put(event)
-            time.sleep(self.PushInterval)
+            self.wait()
 
     def fetch_quotation(self):
         # return your quotation
@@ -49,3 +47,8 @@ class BaseEngine:
     def init(self):
         # do something init
         pass
+
+    def wait(self):
+        # for receive quit signal
+        for _ in range(int(self.PushInterval) + 1):
+            time.sleep(1)
